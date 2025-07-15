@@ -49,6 +49,10 @@ spec:
           env:
             - name: GRADIO_SERVER_PORT
               value: {{ .Values.env.GRADIO_SERVER_PORT | quote }}
+            - name: GRADIO_SERVER_NAME
+              value: {{ .Values.env.GRADIO_SERVER_NAME | quote }}
+            - name: GRADIO_SHARE
+              value: {{ .Values.env.GRADIO_SHARE | quote }}
             - name: YOLO_ENDPOINT
               valueFrom:
                 secretKeyRef:

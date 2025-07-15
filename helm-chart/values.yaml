@@ -80,12 +80,10 @@ affinity: {}
 # Application configuration
 app:
   port: 8080
-  
   # API Endpoints - configure these for your deployment
   yolo:
     endpoint: "https://your-yolo-endpoint.com/predict"
     apiKey: "your-yolo-api-key-here"
-  
   qwen:
     endpoint: "https://your-qwen-endpoint.com/v1/chat/completions"
     apiKey: "your-qwen-api-key-here"
@@ -93,6 +91,8 @@ app:
 # Environment variables
 env:
   GRADIO_SERVER_PORT: "8080"
+  GRADIO_SERVER_NAME: "0.0.0.0"
+  GRADIO_SHARE: "false"
 
 # Platform related options
 ezua:
