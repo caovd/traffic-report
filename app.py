@@ -326,9 +326,9 @@ if __name__ == "__main__":
     demo = create_interface()
     try:
         demo.launch(
-            server_name="0.0.0.0",
+            server_name=os.environ.get('GRADIO_SERVER_NAME', '0.0.0.0'),
             server_port=int(os.environ.get('GRADIO_SERVER_PORT', 8080)),
-            share=True,
+            share=os.environ.get('GRADIO_SHARE', 'false').lower() == 'true',
             show_error=True,
             prevent_thread_lock=False,
             allowed_paths=["/tmp"]
@@ -337,7 +337,7 @@ if __name__ == "__main__":
         print(f"Error launching Gradio app: {e}")
         # Fallback launch with minimal configuration
         demo.launch(
-            server_name="0.0.0.0",
+            server_name=os.environ.get('GRADIO_SERVER_NAME', '0.0.0.0'),
             server_port=int(os.environ.get('GRADIO_SERVER_PORT', 8080)),
-            share=True
+            share=os.environ.get('GRADIO_SHARE', 'false').lower() == 'true'
         )
