@@ -40,11 +40,26 @@ spec:
           args:
             - -c
             - |
-              # Patch app.py to use environment variables
-              sed -i 's/share=True/share=os.environ.get("GRADIO_SHARE", "false").lower() == "true"/g' /app/app.py
-              sed -i 's/server_name="0.0.0.0"/server_name=os.environ.get("GRADIO_SERVER_NAME", "0.0.0.0")/g' /app/app.py
+              # Network diagnostics
+              echo "Network configuration:"
+              echo "hostname: $(hostname)"
+              echo "IP address: $(hostname -i)"
+              echo "Proxy settings: HTTP_PROXY=$HTTP_PROXY, HTTPS_PROXY=$HTTPS_PROXY, NO_PROXY=$NO_PROXY"
+              
+              # Patch app.py to use environment variables and force localhost bypass
+              sed -i 's/share=True/share=False/g' /app/app.py
+              sed -i 's/server_name="0.0.0.0"/server_name="0.0.0.0"/g' /app/app.py
+              
+              # Remove enable_queue parameter if it exists
+              sed -i '/enable_queue=False,/d' /app/app.py
+              
               # Ensure os import is available
               grep -q "import os" /app/app.py || sed -i '1i import os' /app/app.py
+              
+              # Show patched file for debugging
+              echo "Patched app.py around line 327:"
+              sed -n '320,350p' /app/app.py
+              
               # Launch the application
               python /app/app.py
           ports:
@@ -72,6 +87,20 @@ spec:
               value: {{ .Values.env.GRADIO_THEME | quote }}
             - name: PYTHONUNBUFFERED
               value: {{ .Values.env.PYTHONUNBUFFERED | quote }}
+            - name: GRADIO_TEMP_DIR
+              value: {{ .Values.env.GRADIO_TEMP_DIR | quote }}
+            - name: HTTP_PROXY
+              value: {{ .Values.env.HTTP_PROXY | quote }}
+            - name: HTTPS_PROXY
+              value: {{ .Values.env.HTTPS_PROXY | quote }}
+            - name: NO_PROXY
+              value: {{ .Values.env.NO_PROXY | quote }}
+            - name: REQUESTS_CA_BUNDLE
+              value: {{ .Values.env.REQUESTS_CA_BUNDLE | quote }}
+            - name: CURL_CA_BUNDLE
+              value: {{ .Values.env.CURL_CA_BUNDLE | quote }}
+            - name: DOMAIN_NAME
+              value: {{ .Values.ezua.virtualService.endpoint | quote }}
             - name: YOLO_ENDPOINT
               valueFrom:
                 secretKeyRef:

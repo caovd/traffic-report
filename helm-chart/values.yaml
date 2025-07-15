@@ -101,10 +101,18 @@ env:
   PYTHONUNBUFFERED: "1"
   # Force Gradio to skip localhost check
   GRADIO_TEMP_DIR: "/tmp/gradio"
+  # Proxy settings to allow localhost access
+  HTTP_PROXY: ""
+  HTTPS_PROXY: ""
+  NO_PROXY: "localhost,127.0.0.1,0.0.0.0,::1"
+  # Network configuration for container
+  REQUESTS_CA_BUNDLE: ""
+  CURL_CA_BUNDLE: ""
 
 # Platform related options
 ezua:
   # Use next options in order to configure the application endpoint.
   virtualService:
+    enabled: true
     endpoint: "traffic-report.${DOMAIN_NAME}"
     istioGateway: "istio-system/ezaf-gateway"
