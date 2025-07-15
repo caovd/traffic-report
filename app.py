@@ -328,7 +328,7 @@ if __name__ == "__main__":
         demo.launch(
             server_name='127.0.0.1',
             server_port=8080,
-            share=True,
+            share=False,
             show_error=True,
             prevent_thread_lock=False,
             allowed_paths=["/tmp"]
@@ -339,5 +339,5 @@ if __name__ == "__main__":
         demo.launch(
             server_name='127.0.0.1',
             server_port=8080,
-            share=True
+            share=False
         )
