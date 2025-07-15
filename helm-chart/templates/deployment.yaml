@@ -36,6 +36,17 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/bin/sh"]
+          args:
+            - -c
+            - |
+              # Patch app.py to use environment variables
+              sed -i 's/share=True/share=os.environ.get("GRADIO_SHARE", "false").lower() == "true"/g' /app/app.py
+              sed -i 's/server_name="0.0.0.0"/server_name=os.environ.get("GRADIO_SERVER_NAME", "0.0.0.0")/g' /app/app.py
+              # Ensure os import is available
+              grep -q "import os" /app/app.py || sed -i '1i import os' /app/app.py
+              # Launch the application
+              python /app/app.py
           ports:
             - name: http
               containerPort: {{ .Values.app.port }}
@@ -53,6 +64,14 @@ spec:
               value: {{ .Values.env.GRADIO_SERVER_NAME | quote }}
             - name: GRADIO_SHARE
               value: {{ .Values.env.GRADIO_SHARE | quote }}
+            - name: GRADIO_ALLOW_FLAGGING
+              value: {{ .Values.env.GRADIO_ALLOW_FLAGGING | quote }}
+            - name: GRADIO_ANALYTICS_ENABLED
+              value: {{ .Values.env.GRADIO_ANALYTICS_ENABLED | quote }}
+            - name: GRADIO_THEME
+              value: {{ .Values.env.GRADIO_THEME | quote }}
+            - name: PYTHONUNBUFFERED
+              value: {{ .Values.env.PYTHONUNBUFFERED | quote }}
             - name: YOLO_ENDPOINT
               valueFrom:
                 secretKeyRef:
