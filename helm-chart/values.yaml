@@ -1,0 +1,102 @@
+# Default values for traffic-report
+# This is a YAML-formatted file.
+
+replicaCount: 1
+
+image:
+  repository: caovd/traffic-report
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  automount: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+
+service:
+  type: ClusterIP
+  port: 8080
+  targetPort: 8080
+  protocol: TCP
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: traffic-report.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+resources:
+  limits:
+    cpu: 1000m
+    memory: 2Gi
+  requests:
+    cpu: 500m
+    memory: 1Gi
+
+livenessProbe:
+  httpGet:
+    path: /
+    port: http
+  initialDelaySeconds: 30
+  periodSeconds: 10
+
+readinessProbe:
+  httpGet:
+    path: /
+    port: http
+  initialDelaySeconds: 5
+  periodSeconds: 5
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
+
+volumes: []
+volumeMounts: []
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+# Application configuration
+app:
+  port: 8080
+  
+  # API Endpoints - configure these for your deployment
+  yolo:
+    endpoint: "https://your-yolo-endpoint.com/predict"
+    apiKey: "your-yolo-api-key-here"
+  
+  qwen:
+    endpoint: "https://your-qwen-endpoint.com/v1/chat/completions"
+    apiKey: "your-qwen-api-key-here"
+
+# Environment variables
+env:
+  GRADIO_SERVER_PORT: "8080"
+
+# Platform related options
+ezua:
+  # Use next options in order to configure the application endpoint.
+  virtualService:
+    endpoint: "traffic-report.${DOMAIN_NAME}"
+    istioGateway: "istio-system/ezaf-gateway"
