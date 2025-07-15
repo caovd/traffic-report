@@ -1,8 +1,10 @@
-# Smart Traffic Management Demo
+# Automated Traffic Report
 
 Gen AI-powered smart traffic management system using YOLOv8 and Qwen2.5-VL for real-time traffic analysis.
 
 This application leverages the complementary strengths of two specialized AI models to provide comprehensive traffic scene understanding:
+
+**NOTE** The app should work in a localhost. However, the helm chart is WIP due to a pending fix for Gradio compatibility issue.
 
 **YOLOv8 (Object Detection)** excels at:
 - **Real-time detection** with minimal latency for immediate response
